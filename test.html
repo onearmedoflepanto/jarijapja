@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <title>간단한 지도 표시하기</title>
+  <!-- 지도 API -->
+  <script type="text/javascript"
+    src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u220qy34qg&submodules=geocoder"></script>
+</head>
+
+<body>
+  <div id="map" style="width:100%;height:400px;"></div>
+  <p>동 이름을 입력</p>
+  <form id="searchForm">
+    <input type="text" id="searchInput">
+    <input type="submit" value="검색">
+  </form>
+  <script>
+    // 지도 생성
+    var map = new naver.maps.Map('map', {
+      center: new naver.maps.LatLng(37.3595704, 127.105399),
+      zoom: 10
+    });
+
+    // 검색 이벤트 핸들러
+    document.getElementById("searchForm").addEventListener("submit", function (e) {
+      e.preventDefault(); // 새로고침 방지
+      const query = document.getElementById("searchInput").value;
+
+      if (!query.trim()) {
+        alert("검색어를 입력하세요.");
+        return;
+      }
+
+      naver.maps.Service.geocode({
+        query: query
+      }, function (status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+          alert('검색 실패! 다시 시도하세요.');
+          return;
+        }
+        const result = response.v2,
+          items = result.addresses;
+
+        if (items.length === 0) {
+          alert("검색 결과가 없습니다.");
+          return;
+        }
+
+        // 첫번째 결과 사용
+        const lat = items[0].y;
+        const lng = items[0].x;
+        const newLatLng = new naver.maps.LatLng(lat, lng);
+
+        // 지도 이동
+        map.setCenter(newLatLng);
+        map.setZoom(15)
+        // 마커 추가 (옵션)
+        new naver.maps.Marker({
+          position: newLatLng,
+          map: map
+        });
+        alert("검색 성공!");
+      });
+    });
+  </script>
+</body>
+
+</html>
