@@ -23,8 +23,7 @@ const MapPage: React.FC = () => {
         const response = await api.get(
           `adong-details/${location.adongCode}?themeCode=${theme.subCategoryCode}`
         );
-        console.log("API 응답:", response.data);
-        const data = response.data as { 경계좌표?: string };
+        const data = response.data as { 경계좌표?: string; 업종_통계?: any, 전체_주소?:any };
         const polygonCoords = data.경계좌표;
 
         if (!polygonCoords) {
@@ -53,6 +52,43 @@ const MapPage: React.FC = () => {
           strokeOpacity: 0.8,
           strokeWeight: 2,
         });
+        const regionInfo = data.업종_통계;
+        const regionName = data.전체_주소;
+        const companyNumber: number =
+          regionInfo.기업체수 === "N/A" ? 0 : regionInfo.기업체수;
+        const themeName: string = regionInfo.업종명;
+        const staffNumber: number | string =
+          regionInfo.종사자수 === "N/A" ? 0 : regionInfo.종사자수;
+
+        const center = naverPolygon.getBounds().getCenter();
+
+        const contentString = `<div style="padding: 10px; line-height: 1.5; text-align: center;">
+              <div style="font-weight: bold; font-size: 16px;">${regionName}</div>
+              <div style="font-size: 14px; color: #333;">${themeName}</div>
+              <hr style="margin: 8px 0;">
+              <div style="font-size: 12px; color: #555;">업체 수: ${companyNumber}</div>
+              <div style="font-size: 12px; color: #555;">종사자 수: ${staffNumber}</div>
+            </div>`;
+
+        const infoWindow = new naver.maps.InfoWindow({
+          content: contentString,
+          backgroundColor: "white",
+          borderColor: "#5347AA",
+          borderWidth: 2,
+          anchorSize: new naver.maps.Size(15, 10),
+          anchorSkew: true,
+          pixelOffset: new naver.maps.Point(0, -20),
+        });
+
+        naver.maps.Event.addListener(naverPolygon, "click", (e: any) => {
+          if (infoWindow.getMap()) {
+            infoWindow.close();
+          } else {
+            infoWindow.open(naverMap, e.coord);
+          }
+        });
+
+        infoWindow.open(naverMap, center);
       } catch (error) {
         console.error("데이터를 가져오는 데 실패했습니다:", error);
       }
@@ -120,12 +156,6 @@ const MapPage: React.FC = () => {
       clearInterval(geocoderInterval);
     };
   }, [naverMap, location]);
-
-  useEffect(() => {
-    if (theme) {
-      console.log("MapPage: theme updated", theme);
-    }
-  }, [theme]);
 
   useEffect(() => {
     handleInfo();

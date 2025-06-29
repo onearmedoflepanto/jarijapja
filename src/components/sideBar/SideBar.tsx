@@ -95,7 +95,7 @@ const SideBar: React.FC = () => {
         </button>
         {openDropdown === 'sido' && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <ul className="py-1">
+            <ul className="py-1 max-h-60 overflow-y-auto">
               {sidoOptions.map((option) => (
                 <li
                   key={option}
@@ -127,7 +127,7 @@ const SideBar: React.FC = () => {
         </button>
         {openDropdown === 'sigungu' && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <ul className="py-1">
+            <ul className="py-1 max-h-60 overflow-y-auto">
               {sigunguOptions.map((option) => (
                 <li
                   key={option}
@@ -158,7 +158,7 @@ const SideBar: React.FC = () => {
         </button>
         {openDropdown === 'dong' && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <ul className="py-1">
+            <ul className="py-1 max-h-60 overflow-y-auto">
               {dongOptions.map((option) => (
                 <li
                   key={option}
@@ -177,7 +177,6 @@ const SideBar: React.FC = () => {
                         adongName: adongInfoItem.adongName,
                         adongCode: adongInfoItem.adongCode,
                       };
-                      console.log('SideBar: setLocation called with:', newLocation);
                       setLocation(newLocation);
                     }
                   }}
@@ -203,7 +202,7 @@ const SideBar: React.FC = () => {
         </button>
         {openDropdown === 'mainTheme' && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <ul className="py-1">
+            <ul className="py-1 max-h-60 overflow-y-auto">
               {mainThemeOptions.map((option) => (
                 <li
                   key={option}
@@ -234,7 +233,7 @@ const SideBar: React.FC = () => {
         </button>
         {openDropdown === 'subTheme' && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <ul className="py-1">
+            <ul className="py-1 max-h-60 overflow-y-auto">
               {subThemeOptions.map((option) => (
                 <li
                   key={option}
