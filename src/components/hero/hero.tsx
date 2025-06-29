@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocation } from "@/context/LocationContext";
+import adongInfo from "@/components/sideBar/adongInfo.js";
 import group92 from "./group-92.png";
 import Script from 'next/script';
 
@@ -18,19 +19,36 @@ export const Hero: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      // For now, we'll create a partial LocationInfo object.
-      // You might need a more sophisticated way to get all the details.
-      const newLocation = {
-        sidoName: '',
-        sigunguName: '',
-        adongName: searchQuery,
-        sidoCode: '',
-        sigunguCode: '',
-        adongCode: '',
-      };
-      setLocation(newLocation);
-      router.push("/map");
+    const query = searchQuery.trim();
+    if (query) {
+      let foundLocation = null;
+
+      for (const sido of adongInfo) {
+        for (const sigungu of sido.sigungus) {
+          for (const adong of sigungu.adongs) {
+            if (adong.adongName === query) {
+              foundLocation = {
+                sidoName: sido.sidoName,
+                sigunguName: sigungu.sigunguName,
+                adongName: adong.adongName,
+                sidoCode: sido.sidoCode,
+                sigunguCode: sigungu.sigunguCode,
+                adongCode: adong.adongCode,
+              };
+              break;
+            }
+          }
+          if (foundLocation) break;
+        }
+        if (foundLocation) break;
+      }
+
+      if (foundLocation) {
+        setLocation(foundLocation);
+        router.push("/map");
+      } else {
+        alert("해당하는 지역을 찾을 수 없습니다.");
+      }
     }
   };
 

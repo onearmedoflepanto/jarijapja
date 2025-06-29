@@ -11,14 +11,25 @@ interface LocationInfo {
   adongCode: string;
 }
 
+interface ThemeInfo {
+  mainCategoryName: string;
+  mainCategoryCode: string;
+  subCategoryName: string;
+  subCategoryCode: string;
+}
+
 interface LocationContextType {
   location: LocationInfo | null;
   setLocation: (location: LocationInfo | null) => void;
+  theme: ThemeInfo | null;
+  setTheme: (theme: ThemeInfo | null) => void;
 }
 
 export const LocationContext = createContext<LocationContextType>({
   location: null,
   setLocation: () => {},
+  theme: null,
+  setTheme: () => {},
 });
 
 export const LocationProvider = ({ children }: { children: React.ReactNode }) => {
@@ -30,9 +41,10 @@ export const LocationProvider = ({ children }: { children: React.ReactNode }) =>
     sigunguCode: '11140',
     adongCode: '1114052000',
   });
+  const [theme, setTheme] = useState<ThemeInfo | null>(null);
 
   return (
-    <LocationContext.Provider value={{ location, setLocation }}>
+    <LocationContext.Provider value={{ location, setLocation, theme, setTheme }}>
       {children}
     </LocationContext.Provider>
   );
