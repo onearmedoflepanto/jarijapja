@@ -1,73 +1,411 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-  <title>간단한 지도 표시하기</title>
-  <!-- 지도 API -->
-  <script type="text/javascript"
-    src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u220qy34qg&submodules=geocoder"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Introduction</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .slide-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      width: 100%;
+      padding: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .profile-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4em;
+      color: white;
+      font-weight: 300;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      flex-shrink: 0;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .header-text {
+      text-align: left;
+    }
+
+    .name {
+      font-size: 3em;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .title {
+      font-size: 1.5em;
+      color: #4a5568;
+      font-weight: 300;
+    }
+
+    .profile-info {
+      margin-bottom: 40px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .info-item {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      border: 2px solid #e2e8f0;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .info-item:hover {
+      transform: translateY(-3px);
+      border-color: #667eea;
+    }
+
+    .info-item h4 {
+      color: #2d3748;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .info-item p {
+      color: #4a5568;
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .section {
+      background: #f8fafc;
+      padding: 30px;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+    }
+
+    .section h3 {
+      color: #2d3748;
+      font-size: 1.3em;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .tech-tag {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    .specialty {
+      color: #e53e3e;
+      font-weight: 600;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+    }
+
+    .skills-list {
+      list-style: none;
+    }
+
+    .skills-list li {
+      color: #4a5568;
+      margin-bottom: 8px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .skills-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: bold;
+    }
+
+    .project-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .project-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .preferences {
+      background: #edf2f7;
+      padding: 30px;
+      border-radius: 15px;
+      border-left: 5px solid #38b2ac;
+    }
+
+    .preferences h3 {
+      color: #2d3748;
+      margin-bottom: 20px;
+    }
+
+    .pref-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .pref-item {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .pref-item h4 {
+      color: #38b2ac;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .pref-item p {
+      color: #4a5568;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+
+    .contact-info {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    .contact-info p {
+      color: #4a5568;
+      font-size: 1.1em;
+    }
+
+    @media (max-width: 768px) {
+      .slide-container {
+        padding: 40px 30px;
+      }
+
+      .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+
+      .header-text {
+        text-align: center;
+      }
+
+      .profile-photo {
+        width: 120px;
+        height: 120px;
+        font-size: 3em;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .name {
+        font-size: 2.5em;
+      }
+
+      .pref-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <div id="map" style="width:100%;height:400px;"></div>
-  <p>동 이름을 입력</p>
-  <form id="searchForm">
-    <input type="text" id="searchInput">
-    <input type="submit" value="검색">
-  </form>
-  <script>
-    // 지도 생성
-    var map = new naver.maps.Map('map', {
-      center: new naver.maps.LatLng(37.3595704, 127.105399),
-      zoom: 10
-    });
+  <div class="slide-container">
+    <div class="header">
+      <div class="profile-photo">
+        <!-- 사진을 넣으려면 아래 주석을 해제하고 src에 이미지 URL을 넣으세요 -->
+        <img src="./증명사진.JPG" alt="Profile Photo">
+      </div>
+      <div class="header-text">
+        <h1 class="name">Developer</h1>
+        <p class="title">Full-Stack Developer & Frontend Specialist</p>
+      </div>
+    </div>
 
-    // 검색 이벤트 핸들러
-    document.getElementById("searchForm").addEventListener("submit", function (e) {
-      e.preventDefault(); // 새로고침 방지
-      const query = document.getElementById("searchInput").value;
+    <div class="profile-info">
+      <div class="info-grid">
+        <div class="info-item">
+          <h4>🎓 전공</h4>
+          <p>Machine Engineering</p>
+        </div>
+        <div class="info-item">
+          <h4>🎮 취미</h4>
+          <p>Gaming • Analyzing</p>
+        </div>
+      </div>
+    </div>
 
-      if (!query.trim()) {
-        alert("검색어를 입력하세요.");
-        return;
-      }
+    <div class="content-grid">
+      <div class="section">
+        <h3>💻 Tech Stack</h3>
+        <div class="tech-stack">
+          <span class="tech-tag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+              style="margin-right: 8px; vertical-align: middle;">
+              <path
+                d="M11.146 0h3.924v18.166c-2.013.382-3.491.535-5.096.535-4.791 0-7.288-2.166-7.288-6.32 0-4.002 2.65-6.6 6.753-6.6.637 0 1.121.051 1.707.204zm0 9.143c-.535-.204-.892-.255-1.427-.255-2.013 0-3.134 1.325-3.134 3.364 0 2.012 1.121 3.235 2.955 3.235.51 0 .892-.051 1.606-.153z" />
+            </svg>
+            Django
+          </span>
+          <span class="tech-tag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+              style="margin-right: 8px; vertical-align: middle;">
+              <path
+                d="M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 12.48l2.833-2.833 1.414 1.414-2.833 2.833 2.833 2.833-1.414 1.414L9.219 15.308l-2.833 2.833L4.972 16.727l2.833-2.833L4.972 11.061l1.414-1.414 2.833 2.833 2.833-2.833 1.414 1.414-2.833 2.833z" />
+            </svg>
+            Next.js
+          </span>
+          <span class="tech-tag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+              style="margin-right: 8px; vertical-align: middle;">
+              <path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" />
+            </svg>
+            Vue.js
+          </span>
+          <span class="tech-tag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+              style="margin-right: 8px; vertical-align: middle;">
+              <path
+                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 7.568l-5.568 5.568-5.568-5.568L7.568 6.432 12 10.864l4.432-4.432z" />
+            </svg>
+            PyTorch
+          </span>
+        </div>
+        <div class="specialty">현재 선호 포지션: Frontend</div>
+        <p style="color: #4a5568;">풀스택 개발이 가능하지만, 현재는 프론트엔드 개발에 집중하고 있습니다.</p>
+      </div>
 
-      naver.maps.Service.geocode({
-        query: query
-      }, function (status, response) {
-        if (status !== naver.maps.Service.Status.OK) {
-          alert('검색 실패! 다시 시도하세요.');
-          return;
-        }
-        const result = response.v2,
-          items = result.addresses;
+      <div class="section">
+        <h3>🚀 Core Strengths</h3>
+        <ul class="skills-list">
+          <li>주도적인 프로젝트 리더십</li>
+          <li>뛰어난 발표 및 커뮤니케이션 능력</li>
+          <li>풀스택 개발 역량</li>
+          <li>개인 프로젝트 운영 경험</li>
+        </ul>
+        <a href="https://jarijapja-gswj.vercel.app/" target="_blank" class="project-link">
+          🔗 개인 프로젝트 보기
+        </a>
+      </div>
+    </div>
 
-        if (items.length === 0) {
-          alert("검색 결과가 없습니다.");
-          return;
-        }
+    <div class="preferences">
+      <h3>🤝 선호하는 팀원 유형</h3>
+      <div class="pref-grid">
+        <div class="pref-item">
+          <h4>🎨 디자인 역량</h4>
+          <p>창의적인 디자인 감각과 UX/UI에 대한 이해가 있는 팀원</p>
+        </div>
+        <div class="pref-item">
+          <h4>🎯 목표 지향적</h4>
+          <p>목표 설정과 달성에 적극적으로 참여하는 팀원</p>
+        </div>
+        <div class="pref-item">
+          <h4>💪 적극적 참여</h4>
+          <p>팀 업무에 주도적이고 적극적으로 참여하는 팀원</p>
+        </div>
+      </div>
+    </div>
 
-        // 첫번째 결과 사용
-        const lat = items[0].y;
-        const lng = items[0].x;
-        const newLatLng = new naver.maps.LatLng(lat, lng);
-
-        // 지도 이동
-        map.setCenter(newLatLng);
-        map.setZoom(15)
-        // 마커 추가 (옵션)
-        new naver.maps.Marker({
-          position: newLatLng,
-          map: map
-        });
-        alert("검색 성공!");
-      });
-    });
-  </script>
+    <div class="contact-info">
+      <p>💬 네트워킹과 협업 기회를 언제든 환영합니다!</p>
+    </div>
+  </div>
 </body>
 
 </html>

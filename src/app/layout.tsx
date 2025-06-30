@@ -1,8 +1,8 @@
 "use client";
 import type { Metadata } from "next";
 import "./globals.css";
-import { NavBar } from "@/components/navBar/NavBar";
 import { LocationProvider } from "@/context/LocationContext";
+import { NavBar } from "@/components/navBar/NavBar";
 
 export default function RootLayout({
   children,
@@ -12,8 +12,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="flex flex-col h-screen">
+        <NavBar />
         <LocationProvider>
-          <NavBar />
           <main className="flex-1 overflow-hidden">{children}</main>
         </LocationProvider>
       </body>

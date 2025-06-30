@@ -33,15 +33,17 @@ export const NavBar: React.FC = () => {
         </nav>
         {/* Auth Buttons */}
         <div className="flex items-center gap-4">
-          <a href="#" className="text-gray-900 hover:text-rose-500">
+          <Link href="/login" className="text-gray-900 hover:text-rose-500">
             로그인
-          </a>
+            </Link>
+          <Link href="/signup">
           <ButtonPrimaryWith
             className="h-auto rounded-md px-3 py-2 bg-gray-900"
             divClassName="text-white"
             hasIcon={false}
-            text="회원가입"
+            text="회원가입"            
           />
+          </Link>
         </div>
       </div>
     </div>
