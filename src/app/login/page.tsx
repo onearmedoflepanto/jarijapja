@@ -3,16 +3,39 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import api from '../../../api/axios';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [autoLogin, setAutoLogin] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현
-    console.log({ email, password, autoLogin });
+    setError('');
+
+    try {
+      const response = await api.post<{ Authorization: string }>('api/login', { "username" : username, "password" : password });
+      console.log(response.headers)
+      const Authorization  = response.headers.authorization.split(' ')[1];
+      if (Authorization) {
+        localStorage.setItem('token', Authorization);
+        router.push('/');
+      } else {
+        setError('로그인에 실패했습니다.');
+      }
+    } catch (error: any) {
+      console.error(
+        'An unexpected error occurred:',
+        error.response?.data || error.message,
+      );
+      setError(
+        error.response?.data?.message || '로그인 중 오류가 발생했습니다.',
+      );
+    }
   };
 
   return (
@@ -33,21 +56,21 @@ export default function LoginPage() {
               <form onSubmit={handleLogin} className="space-y-6">
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="username"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    이메일
+                    아이디
                   </label>
                   <div className="mt-1">
                     <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
+                      id="username"
+                      name="username"
+                      type="text"
+                      autoComplete="username"
                       required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="이메일 주소"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="아이디"
                       className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -74,6 +97,8 @@ export default function LoginPage() {
                     />
                   </div>
                 </div>
+
+                {error && <p className="text-sm text-red-600">{error}</p>}
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">

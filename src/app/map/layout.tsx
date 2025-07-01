@@ -10,7 +10,6 @@ export default function MapLayout({
 }) {
   return (
     <>
-      <NavBar />
       <div className="flex h-screen bg-white max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="z-10">
           <SideBar />

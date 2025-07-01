@@ -10,10 +10,10 @@ const axiosInstance: AxiosInstance = axios.create({
 
 const handleRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // 요청 인터셉터: 요청을 보내기 전에 수행할 작업 (예: 토큰 추가)
-  // const token = localStorage.getItem('token');
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`;
-  // }
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 };
 
